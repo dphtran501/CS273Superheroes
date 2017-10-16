@@ -21,10 +21,11 @@ public class Superhero
     /**
      * Instantiates a new <code>Superhero</code> given its username, name, superpower, and one
      * thing about them.
-     * @param userName The username of the <code>Superhero</code>.
-     * @param name The name of the <code>Superhero</code>.
+     *
+     * @param userName   The username of the <code>Superhero</code>.
+     * @param name       The name of the <code>Superhero</code>.
      * @param superPower The superpower of the <code>Superhero</code>.
-     * @param oneThing The one thing about the <code>Superhero</code>.
+     * @param oneThing   The one thing about the <code>Superhero</code>.
      */
     public Superhero(String userName, String name, String superPower, String oneThing)
     {
@@ -37,6 +38,7 @@ public class Superhero
 
     /**
      * Gets the username of the <code>Superhero</code>.
+     *
      * @return The username of the <code>Superhero</code>.
      */
     public String getUserName()
@@ -46,6 +48,7 @@ public class Superhero
 
     /**
      * Gets the name of the <code>Superhero</code>.
+     *
      * @return The name of the <code>Superhero</code>.
      */
     public String getName()
@@ -55,6 +58,7 @@ public class Superhero
 
     /**
      * Gets the superpower of the <code>Superhero</code>.
+     *
      * @return The superpower of the <code>Superhero</code>.
      */
     public String getSuperPower()
@@ -64,6 +68,7 @@ public class Superhero
 
     /**
      * Gets the one thing about the <code>Superhero</code>.
+     *
      * @return The one thing about the <code>Superhero</code>.
      */
     public String getOneThing()
@@ -73,6 +78,7 @@ public class Superhero
 
     /**
      * Gets the file name of the <code>Superhero</code> with its path. For example: dtran258.png
+     *
      * @return The file name of the <code>Superhero</code>.
      */
     public String getFileName()
@@ -82,6 +88,7 @@ public class Superhero
 
     /**
      * Generates a text based representation of this <code>Superhero</code>.
+     *
      * @return A text based representation of this <code>Superhero</code>.
      */
     @Override
