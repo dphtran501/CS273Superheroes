@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CS 273 Superheroes</string>
+    <string name="question">Question %1$d of %2$d</string>
+    <string name="image_description">Image of the current superhero in the quiz</string>
+    <string name="guess">Guess the %1$s</string>
 </resources>
