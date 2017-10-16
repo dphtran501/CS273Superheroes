@@ -1,10 +1,14 @@
 package edu.orangecoastcollege.cs273.dtran258.cs273superheroes;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,8 +27,8 @@ import java.util.List;
  * related to the "superhero" shown. In the end, the user will be shown a percentage indicating how
  * well they did on the quiz.
  * <p>
- *     The user can switch between guessing the name, the super power, or the one thing about the
- *     super hero by clicking on the settings options menu at the top.
+ * The user can switch between guessing the name, the super power, or the one thing about the
+ * super hero by clicking on the settings options menu at the top.
  * </p>
  *
  * @author Derek Tran
@@ -138,7 +142,7 @@ public class QuizActivity extends AppCompatActivity
         do
         {
             Collections.shuffle(mAllSuperheroesList);
-        } while(mAllSuperheroesList.subList(0, 4).contains(mCorrectSuperhero));
+        } while (mAllSuperheroesList.subList(0, 4).contains(mCorrectSuperhero));
 
         for (int i = 0; i < 4; i++)
         {
@@ -148,6 +152,62 @@ public class QuizActivity extends AppCompatActivity
 
         // Randomly set one of the buttons to the correct superhero
         mButtons[rng.nextInt(4)].setText(mCorrectSuperhero.getUserName());
+    }
 
+    public void makeGuess(View v)
+    {
+        // Retrieve text of clicked button (guess)
+        Button clickedButton = (Button) v;
+        String guess = clickedButton.getText().toString();
+
+        mTotalGuesses++;
+
+        // If guess is correct, increment number of correct guesses, disable all buttons, and
+        // display correct answer in green text
+        if (guess.equals(mCorrectSuperhero.getUserName()))
+        {
+            mCorrectGuesses++;
+            for (Button b : mButtons) b.setEnabled(false);
+            mAnswerTextView.setText(mCorrectSuperhero.getUserName());
+            mAnswerTextView.setTextColor(ContextCompat.getColor(this, R.color.correct_answer));
+
+            // If user hasn't completed quiz, load next question
+            if (mCorrectGuesses < SUPERHEROES_IN_QUIZ)
+            {
+                // Wait two seconds before displaying next question
+                handler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        loadNextSuperhero();
+                    }
+                }, 2000);
+            }
+            // Else, user completed quiz, so show AlertDialog w/statistics and option to reset quiz
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.results, mTotalGuesses, 100.0 * mCorrectGuesses / mTotalGuesses));
+                builder.setPositiveButton(getString(R.string.reset_quiz), new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        resetQuiz();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create();
+                builder.show();
+            }
+        }
+        // Else, guess is incorrect, so disable clicked button and display "Incorrect!" in red text
+        else
+        {
+            clickedButton.setEnabled(false);
+            mAnswerTextView.setText(getString(R.string.incorrect_answer));
+            mAnswerTextView.setTextColor(ContextCompat.getColor(this, R.color.incorrect_answer));
+        }
     }
 }
