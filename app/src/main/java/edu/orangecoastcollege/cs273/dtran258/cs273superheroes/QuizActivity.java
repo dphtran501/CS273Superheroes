@@ -126,7 +126,6 @@ public class QuizActivity extends AppCompatActivity
             mAllSuperheroPowersList.add(s.getSuperPower());
             mAllSuperheroOneThingsList.add(s.getOneThing());
         }
-        mAllSuperheroTypeList = new ArrayList<>();
         mQuizSuperheroesList = new ArrayList<>(SUPERHEROES_IN_QUIZ);
 
         rng = new SecureRandom();
@@ -148,7 +147,6 @@ public class QuizActivity extends AppCompatActivity
         mTotalGuesses = 0;
         mCorrectGuesses = 0;
         mQuizSuperheroesList.clear();
-        mAllSuperheroTypeList.clear();
         // Display question prompt
         mGuessTextView.setText(getString(R.string.guess, mQuizType));
 
@@ -188,15 +186,15 @@ public class QuizActivity extends AppCompatActivity
         // Update which superhero information to use for quiz according to preferences
         if (mQuizType.equals(getString(R.string.name_type)))
         {
-            mAllSuperheroTypeList = mAllSuperheroNamesList;
+            mAllSuperheroTypeList = new ArrayList<>(mAllSuperheroNamesList);
             mCorrectAnswer = mCorrectSuperhero.getName();
         } else if (mQuizType.equals(getString(R.string.power_type)))
         {
-            mAllSuperheroTypeList = mAllSuperheroPowersList;
+            mAllSuperheroTypeList = new ArrayList<>(mAllSuperheroPowersList);
             mCorrectAnswer = mCorrectSuperhero.getSuperPower();
         } else if (mQuizType.equals(getString(R.string.one_thing_type)))
         {
-            mAllSuperheroTypeList = mAllSuperheroOneThingsList;
+            mAllSuperheroTypeList = new ArrayList<>(mAllSuperheroOneThingsList);
             mCorrectAnswer = mCorrectSuperhero.getOneThing();
         }
 
