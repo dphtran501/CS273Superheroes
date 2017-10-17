@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">CS 273 Superheroes</string>
     <!-- ACTIVITY_QUIZ.XML -->
     <string name="question">Question %1$d of %2$d</string>
@@ -9,4 +9,18 @@
     <!-- ALERT DIALOG -->
     <string name="results">%1$d guesses, %2$.2f%% correct</string>
     <string name="reset_quiz">Reset Quiz</string>
+
+    <!-- MENU SETTINGS -->
+    <string name="action_settings">Settings</string>
+    <string name="restart_toast">Quiz will restart with your new settings.</string>
+
+    <!-- PREFERENCES.XML -->
+    <string name="quiz_types">Quiz Types</string>
+    <string name="quiz_types_descriptions">Choose superhero name, superpower,
+        or one thing about them</string>
+    <string name="name_type">Superhero Name</string>
+    <string name="power_type">Superpower</string>
+    <string name="one_thing_type">One Thing</string>
+    <string name="pref_default">@string/name_type</string>
+    <string name="pref_key"><xliff:g>pref_quiz_type</xliff:g></string>
 </resources>

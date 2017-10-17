@@ -2,16 +2,21 @@ package edu.orangecoastcollege.cs273.dtran258.cs273superheroes;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,15 +53,34 @@ public class QuizActivity extends AppCompatActivity
     private TextView mAnswerTextView;
     // Lists
     private List<Superhero> mAllSuperheroesList;
+    private List<String> mAllSuperheroNamesList;
+    private List<String> mAllSuperheroPowersList;
+    private List<String> mAllSuperheroOneThingsList;
+    private List<String> mAllSuperheroTypeList;
     private List<Superhero> mQuizSuperheroesList;
     // Quiz fields
     private Superhero mCorrectSuperhero;
+    private String mCorrectAnswer;
     private int mTotalGuesses;
     private int mCorrectGuesses;
 
     private SecureRandom rng;
     private Handler handler;
 
+    // Preferences
+    private String mQuizType;
+    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        {
+            // Read quiz type from shared preferences
+            mQuizType = sharedPreferences.getString(getString(R.string.pref_key), getString(R.string.pref_default));
+            resetQuiz();
+
+            // Notify user that quiz will restart
+            Toast.makeText(QuizActivity.this, R.string.restart_toast, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     /**
      * Initializes <code>QuizActivity</code> by inflating its UI.
@@ -90,9 +114,27 @@ public class QuizActivity extends AppCompatActivity
             Log.e(TAG, "Error loading from JSON", e);
         }
 
+        // Initialize other lists
+        mAllSuperheroNamesList = new ArrayList<>();
+        mAllSuperheroPowersList = new ArrayList<>();
+        mAllSuperheroOneThingsList = new ArrayList<>();
+        for (Superhero s : mAllSuperheroesList)
+        {
+            mAllSuperheroNamesList.add(s.getName());
+            mAllSuperheroPowersList.add(s.getSuperPower());
+            mAllSuperheroOneThingsList.add(s.getOneThing());
+        }
+        mAllSuperheroTypeList = new ArrayList<>();
         mQuizSuperheroesList = new ArrayList<>(SUPERHEROES_IN_QUIZ);
+
         rng = new SecureRandom();
         handler = new Handler();
+
+        // Register mPreferenceChangeListener
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.registerOnSharedPreferenceChangeListener(mPreferenceChangeListener);
+        // Update quiz based on preferences
+        mQuizType = preferences.getString(getString(R.string.pref_key), getString(R.string.pref_default));
 
         // Start quiz
         resetQuiz();
@@ -104,6 +146,9 @@ public class QuizActivity extends AppCompatActivity
         mTotalGuesses = 0;
         mCorrectGuesses = 0;
         mQuizSuperheroesList.clear();
+        mAllSuperheroTypeList.clear();
+        // Display question prompt
+        mGuessTextView.setText(getString(R.string.guess, mQuizType));
 
         // Randomly add Superheroes from all Superheroes list to quiz list
         while (mQuizSuperheroesList.size() < SUPERHEROES_IN_QUIZ)
@@ -138,22 +183,47 @@ public class QuizActivity extends AppCompatActivity
             Log.e(TAG, "Error loading image: " + mCorrectSuperhero.getFileName(), e);
         }
 
-        // Set each of the four buttons to a random superhero from the all superheroes list
-        do
+        // Update which superhero information to use for quiz according to preferences
+        if (mQuizType.equals(getString(R.string.name_type)))
         {
-            Collections.shuffle(mAllSuperheroesList);
-        } while (mAllSuperheroesList.subList(0, 4).contains(mCorrectSuperhero));
-
-        for (int i = 0; i < 4; i++)
+            mAllSuperheroTypeList = mAllSuperheroNamesList;
+            mCorrectAnswer = mCorrectSuperhero.getName();
+        }
+        else if (mQuizType.equals(getString(R.string.power_type)))
         {
-            mButtons[i].setEnabled(true);
-            mButtons[i].setText(mAllSuperheroesList.get(i).getUserName());
+            mAllSuperheroTypeList = mAllSuperheroPowersList;
+            mCorrectAnswer = mCorrectSuperhero.getSuperPower();
+        }
+        else if (mQuizType.equals(getString(R.string.one_thing_type)))
+        {
+            mAllSuperheroTypeList = mAllSuperheroOneThingsList;
+            mCorrectAnswer = mCorrectSuperhero.getOneThing();
         }
 
-        // Randomly set one of the buttons to the correct superhero
-        mButtons[rng.nextInt(4)].setText(mCorrectSuperhero.getUserName());
+        // Set buttons to preference-based superhero information
+        do
+        {
+            Collections.shuffle(mAllSuperheroTypeList);
+        } while (mAllSuperheroTypeList.subList(0, mButtons.length).contains(mCorrectAnswer));
+
+        for (int i = 0; i < mButtons.length; i++)
+        {
+            mButtons[i].setEnabled(true);
+            mButtons[i].setText(mAllSuperheroTypeList.get(i));
+        }
+        // Randomly select one of the buttons to have the correct answer
+        mButtons[rng.nextInt(mButtons.length)].setText(mCorrectAnswer);
+
     }
 
+    /**
+     * Handles the click event of one of the buttons indicating the guess of a superhero's
+     * information (name, superpower, or one thing about them) to match the superhero image
+     * displayed. If the guess is correct, the superhero's information (in GREEN) will be shown,
+     * followed by a slight delay of 2 seconds, then the next superhero will be loaded. Otherwise,
+     * "Incorrect!" will be shown (in RED) and the button will be disabled.
+     * @param v The view that called this method.
+     */
     public void makeGuess(View v)
     {
         // Retrieve text of clicked button (guess)
@@ -164,11 +234,11 @@ public class QuizActivity extends AppCompatActivity
 
         // If guess is correct, increment number of correct guesses, disable all buttons, and
         // display correct answer in green text
-        if (guess.equals(mCorrectSuperhero.getUserName()))
+        if (guess.equals(mCorrectAnswer))
         {
             mCorrectGuesses++;
             for (Button b : mButtons) b.setEnabled(false);
-            mAnswerTextView.setText(mCorrectSuperhero.getUserName());
+            mAnswerTextView.setText(mCorrectAnswer);
             mAnswerTextView.setTextColor(ContextCompat.getColor(this, R.color.correct_answer));
 
             // If user hasn't completed quiz, load next question
@@ -209,5 +279,34 @@ public class QuizActivity extends AppCompatActivity
             mAnswerTextView.setText(getString(R.string.incorrect_answer));
             mAnswerTextView.setTextColor(ContextCompat.getColor(this, R.color.incorrect_answer));
         }
+    }
+
+
+    /**
+     * Initializes the contents of this activity's standard options menu.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return You must return true for the menu to be displayed; if you return false it will not be
+     * shown.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Called whenever an item in your options menu is selected.
+     *
+     * @param item The menu item selected.
+     * @return Return false to allow normal menu processing to proceed, true to consume it here.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Launch SettingsActivity
+
+        return super.onOptionsItemSelected(item);
     }
 }
