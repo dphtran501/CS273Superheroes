@@ -47,9 +47,9 @@
             android:id="@+id/button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:lines="2"
+            android:lines="3"
             android:onClick="makeGuess"
             tools:text="Choice"/>
 
@@ -57,9 +57,9 @@
             android:id="@+id/button2"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:lines="2"
+            android:lines="3"
             android:onClick="makeGuess"
             tools:text="Choice"/>
 
@@ -74,9 +74,9 @@
             android:id="@+id/button3"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:lines="2"
+            android:lines="3"
             android:onClick="makeGuess"
             tools:text="Choice"/>
 
@@ -84,9 +84,9 @@
             android:id="@+id/button4"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:lines="2"
+            android:lines="3"
             android:onClick="makeGuess"
             tools:text="Choice"/>
 
