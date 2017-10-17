@@ -2,6 +2,7 @@ package edu.orangecoastcollege.cs273.dtran258.cs273superheroes;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -69,7 +70,8 @@ public class QuizActivity extends AppCompatActivity
 
     // Preferences
     private String mQuizType;
-    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener()
+    {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
         {
@@ -188,13 +190,11 @@ public class QuizActivity extends AppCompatActivity
         {
             mAllSuperheroTypeList = mAllSuperheroNamesList;
             mCorrectAnswer = mCorrectSuperhero.getName();
-        }
-        else if (mQuizType.equals(getString(R.string.power_type)))
+        } else if (mQuizType.equals(getString(R.string.power_type)))
         {
             mAllSuperheroTypeList = mAllSuperheroPowersList;
             mCorrectAnswer = mCorrectSuperhero.getSuperPower();
-        }
-        else if (mQuizType.equals(getString(R.string.one_thing_type)))
+        } else if (mQuizType.equals(getString(R.string.one_thing_type)))
         {
             mAllSuperheroTypeList = mAllSuperheroOneThingsList;
             mCorrectAnswer = mCorrectSuperhero.getOneThing();
@@ -222,6 +222,7 @@ public class QuizActivity extends AppCompatActivity
      * displayed. If the guess is correct, the superhero's information (in GREEN) will be shown,
      * followed by a slight delay of 2 seconds, then the next superhero will be loaded. Otherwise,
      * "Incorrect!" will be shown (in RED) and the button will be disabled.
+     *
      * @param v The view that called this method.
      */
     public void makeGuess(View v)
@@ -281,7 +282,6 @@ public class QuizActivity extends AppCompatActivity
         }
     }
 
-
     /**
      * Initializes the contents of this activity's standard options menu.
      *
@@ -306,6 +306,8 @@ public class QuizActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item)
     {
         // Launch SettingsActivity
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
 
         return super.onOptionsItemSelected(item);
     }
