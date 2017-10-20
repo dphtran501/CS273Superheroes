@@ -75,7 +75,7 @@ public class QuizActivity extends AppCompatActivity
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
         {
-            // Read quiz type from shared preferences
+            // Read quiz type from shared activity_settings
             mQuizType = sharedPreferences.getString(getString(R.string.pref_key), getString(R.string.pref_default));
             resetQuiz();
 
@@ -134,7 +134,7 @@ public class QuizActivity extends AppCompatActivity
         // Register mPreferenceChangeListener
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences.registerOnSharedPreferenceChangeListener(mPreferenceChangeListener);
-        // Update quiz based on preferences
+        // Update quiz based on activity_settings
         mQuizType = preferences.getString(getString(R.string.pref_key), getString(R.string.pref_default));
 
         // Start quiz
@@ -183,7 +183,7 @@ public class QuizActivity extends AppCompatActivity
             Log.e(TAG, "Error loading image: " + mCorrectSuperhero.getFileName(), e);
         }
 
-        // Update which superhero information to use for quiz according to preferences
+        // Update which superhero information to use for quiz according to activity_settings
         if (mQuizType.equals(getString(R.string.name_type)))
         {
             mAllSuperheroTypeList = new ArrayList<>(mAllSuperheroNamesList);

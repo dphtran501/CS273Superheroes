@@ -33,17 +33,17 @@ public class SettingsActivity extends AppCompatActivity
     }
 
     /**
-     * Shows a hierarchy of <code>Preference</code> objects as lists. Used to deal with preferences
+     * Shows a hierarchy of <code>Preference</code> objects as lists. Used to deal with activity_settings
      * in applications.
      */
     public static class SettingsActivityFragment extends PreferenceFragment
     {
-        // Inflates preferences GUI from preferences.xml
+        // Inflates activity_settings GUI from activity_settingsttings.xml
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
+            addPreferencesFromResource(R.xml.activity_settings);
         }
     }
 }
